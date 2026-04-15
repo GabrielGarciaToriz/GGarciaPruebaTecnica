@@ -1,14 +1,18 @@
 package com.digis01.GGarciaPruebaTecnica.Service;
 
+import com.digis01.GGarciaPruebaTecnica.DTO.LoginResponseDTO;
+import com.digis01.GGarciaPruebaTecnica.DTO.UserRequestDTO;
 import com.digis01.GGarciaPruebaTecnica.DTO.UserResponse;
+import com.digis01.GGarciaPruebaTecnica.Exception.UsuarioNoEncontrado;
 import com.digis01.GGarciaPruebaTecnica.Model.Usuario;
 import com.digis01.GGarciaPruebaTecnica.Repository.UserRepository;
-import com.digis01.GGarciaPruebaTecnica.Security.JwtService;
 import com.digis01.GGarciaPruebaTecnica.Utill.AesEncryptionService;
+import jakarta.annotation.PostConstruct;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,17 +23,22 @@ public class UserService {
     private static final DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
     private final AesEncryptionService aes;
     private final UserRepository userRepository;
-    private final JwtService jwtService;
-    private final ZoneId madagascar;
 
-    public UserService(UserRepository userRepository, AesEncryptionService aes, JwtService jwtService, @Value("${app.timezone}") String timezone) {
-        this.userRepository = userRepository;
-        this.aes = aes;
-        this.jwtService = jwtService;
-        this.madagascar = ZoneId.of(timezone);
+    @Value("${app.timezone}")
+    private String timezoneStr;
+    private ZoneId madagascar;
+
+    @PostConstruct
+    public void init() {
+        this.madagascar = ZoneId.of(timezoneStr);
     }
 
-    public List<UserResponse> getUsers(String sortedBy, String filter) {
+    public UserService(UserRepository userRepository1, AesEncryptionService aes) {
+        this.userRepository = userRepository1;
+        this.aes = aes;
+    }
+
+    public List<UserResponse> getUsuarios(String sortedBy, String filter) {
         List<Usuario> list = userRepository.findAll();
         if (filter != null && !filter.isBlank()) {
             list = applyFilter(list, filter);
@@ -39,6 +48,28 @@ public class UserService {
         }
         return list.stream().map(this::toResponseDto).collect(Collectors.toList());
 
+    }
+//    
+//    public UserResponse crearUsuario(UserRequestDTO userDTO){
+//        if(userRepository.existeRFC(userDTO.getRfc())){
+//            
+//        }
+//    }
+
+    public void deteleUsuario(UUID id) {
+        if (!userRepository.eliminarById(id)) {
+            throw new UsuarioNoEncontrado("Usuario no encontrado " + id);
+        }
+    }
+
+    /*Login*/
+    public LoginResponseDTO login(String rfc, String password) {
+        Usuario usuario = userRepository.findByRFC(rfc).orElseThrow(() -> new UsuarioNoEncontrado("Usuario no encontrado"));
+        String passwordDescifrado = aes.decrypt(password);
+        if (!passwordDescifrado.equals(password)) {
+            throw new UsuarioNoEncontrado("Credenciales invalidas");
+        }
+        return new LoginResponseDTO("Acceso exitoso", rfc);
     }
 
     private List<Usuario> applySorting(List<Usuario> list, String field) {

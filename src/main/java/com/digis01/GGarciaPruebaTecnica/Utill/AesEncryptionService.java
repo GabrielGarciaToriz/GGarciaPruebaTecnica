@@ -1,25 +1,28 @@
 package com.digis01.GGarciaPruebaTecnica.Utill;
 
-import java.util.Base64;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import java.util.Base64;
 
 @Service
 public class AesEncryptionService {
 
     private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
-
-    // IV fijo de 16 bytes para simplificar (en producción usa IV aleatorio por cifrado)
     private static final byte[] IV = "1234567890abcdef".getBytes();
 
-    private final SecretKeySpec secretKey;
+    @Value("${app.aes.secret}")
+    private String base64Key;
 
-    public AesEncryptionService(@Value("${app.aes.secret}") String base64Key) {
+    private SecretKeySpec secretKey;
+
+    @PostConstruct
+    public void init() {
         byte[] keyBytes = Base64.getDecoder().decode(base64Key);
-        // AES-256 requiere exactamente 32 bytes
         byte[] key32 = new byte[32];
         System.arraycopy(keyBytes, 0, key32, 0, Math.min(keyBytes.length, 32));
         this.secretKey = new SecretKeySpec(key32, "AES");
@@ -46,5 +49,4 @@ public class AesEncryptionService {
             throw new RuntimeException("Error al descifrar", e);
         }
     }
-
 }

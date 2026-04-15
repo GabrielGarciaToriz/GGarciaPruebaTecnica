@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -37,13 +36,13 @@ public class UserRepository {
                         Direccion.builder()
                                 .id(1)
                                 .name("Hogar")
-                                .name("Rio Blanco")
+                                .street("Rio Blanco")
                                 .country_code("MX")
                                 .build(),
                         Direccion.builder()
                                 .id(2)
                                 .name("Trabajo")
-                                .name("Juan Salvador")
+                                .street("Juan Salvador")
                                 .country_code("MX")
                                 .build()
                 ))
@@ -60,13 +59,13 @@ public class UserRepository {
                         Direccion.builder()
                                 .id(1)
                                 .name("Hogar")
-                                .name("Rio Blanco")
+                                .street("Rio Blanco")
                                 .country_code("MX")
                                 .build(),
                         Direccion.builder()
                                 .id(2)
                                 .name("Trabajo")
-                                .name("Av. Paseo de la reforma")
+                                .street("Av. Paseo de la reforma")
                                 .country_code("MX")
                                 .build()
                 ))
@@ -83,13 +82,13 @@ public class UserRepository {
                         Direccion.builder()
                                 .id(1)
                                 .name("Hogar")
-                                .name("Rio Blanco")
+                                .street("Rio Blanco")
                                 .country_code("MX")
                                 .build(),
                         Direccion.builder()
                                 .id(1)
                                 .name("Trabajo")
-                                .name("Tenancingo")
+                                .street("Tenancingo")
                                 .country_code("MX")
                                 .build()
                 ))

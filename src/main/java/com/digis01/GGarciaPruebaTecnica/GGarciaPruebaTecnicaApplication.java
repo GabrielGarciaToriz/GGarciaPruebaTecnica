@@ -9,8 +9,6 @@ public class GGarciaPruebaTecnicaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(GGarciaPruebaTecnicaApplication.class, args);
-                Date fecha = new Date();
-                System.out.println(fecha.getTime());
 	}
 
 }
