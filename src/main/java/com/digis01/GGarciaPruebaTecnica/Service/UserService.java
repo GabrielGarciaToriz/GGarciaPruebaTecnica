@@ -5,14 +5,12 @@ import com.digis01.GGarciaPruebaTecnica.DTO.UserRequestDTO;
 import com.digis01.GGarciaPruebaTecnica.DTO.UserResponse;
 import com.digis01.GGarciaPruebaTecnica.Exception.UsuarioDuplicado;
 import com.digis01.GGarciaPruebaTecnica.Exception.UsuarioNoEncontrado;
-import com.digis01.GGarciaPruebaTecnica.Model.Direccion;
 import com.digis01.GGarciaPruebaTecnica.Model.Usuario;
 import com.digis01.GGarciaPruebaTecnica.Repository.UserRepository;
 import com.digis01.GGarciaPruebaTecnica.Utill.AesEncryptionService;
 import jakarta.annotation.PostConstruct;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Date;
@@ -161,9 +159,9 @@ public class UserService {
                 case "name"     -> user.setName(value);
                 case "phone"    -> user.setPhone(value);
                 case "password" -> user.setPassword(aes.encrypt(value));
-                case "tax_id"   -> {
+                case "rfc"   -> {
                     if (userRepository.existeRFC(value) && !value.equalsIgnoreCase(user.getRfc())) {
-                        throw new UsuarioDuplicado("tax_id ya en uso: " + value);
+                        throw new UsuarioDuplicado("RFC  ya en uso: " + value);
                     }
                     user.setRfc(value);
                 }
