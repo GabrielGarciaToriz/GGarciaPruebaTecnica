@@ -25,7 +25,7 @@ public class UserRepository {
     private void initData() {
         String rawPassword = "7c4a8d09ca3762af61e59520943dc26494f8941b";
         usuarios.add(Usuario.builder()
-                .Id(UUID.randomUUID())
+                .id(UUID.randomUUID())
                 .email("gabrielgarciatoriz@gmail.com")
                 .name("GabTrax")
                 .phone("+52 56 68 59 24 02")
@@ -48,10 +48,10 @@ public class UserRepository {
                 ))
                 .build());
         usuarios.add(Usuario.builder()
-                .Id(UUID.randomUUID())
+                .id(UUID.randomUUID())
                 .email("roosario@gmail.com")
                 .name("Roosario")
-                .phone("+52 56 68 59 24 02")
+                .phone("+52 56 68 59 24 04")
                 .rfc("SAT090594KP6")
                 .password(aes.encrypt(rawPassword))
                 .created_at(Date.from(Instant.now()))
@@ -71,11 +71,11 @@ public class UserRepository {
                 ))
                 .build());
         usuarios.add(Usuario.builder()
-                .Id(UUID.randomUUID())
+                .id(UUID.randomUUID())
                 .email("jocelyn@gmail.com")
                 .name("Doctora Toriz")
-                .phone("+52 56 68 59 24 02")
-                .rfc("GATG011227KP6")
+                .phone("+52 56 68 59 24 01")
+                .rfc("TOJJ901015ABC")
                 .password(aes.encrypt(rawPassword))
                 .created_at(Date.from(Instant.now()))
                 .direcciones(List.of(

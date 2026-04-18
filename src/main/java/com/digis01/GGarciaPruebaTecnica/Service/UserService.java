@@ -47,7 +47,7 @@ public class UserService {
         if (filter != null && !filter.isBlank()) {
             list = applyFilter(list, filter);
         }
-        if (sortedBy != null && !filter.isBlank()) {
+        if (sortedBy != null && !sortedBy.isBlank()) {
             list = applySorting(list, sortedBy);
         }
         return list.stream().map(this::toResponseDto).collect(Collectors.toList());
@@ -136,18 +136,19 @@ public class UserService {
         }
 
         Usuario usuario = Usuario.builder()
-                .Id(UUID.randomUUID())
-                .email("")
-                .name("")
-                .phone("")
+                .id(UUID.randomUUID())
+                .email(userRequestDTO.getEmail())
+                .name(userRequestDTO.getName())
+                .phone(userRequestDTO.getPhone())
                 .password(aes.encrypt(userRequestDTO.getPassword()))
-                .rfc("")
+                .rfc(userRequestDTO.getRfc())
                 .created_at(Date.from(Instant.now()))
                 .direcciones(userRequestDTO.getDirecciones() != null ? userRequestDTO.getDirecciones() : List.of())
                 .build();
 
         return toResponseDto(userRepository.Guardar(usuario));
     }
+
     public UserResponse patchUser(UUID id, Map<String, Object> fields) {
         Usuario user = userRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNoEncontrado("Usuario no encontrado: " + id));
@@ -155,17 +156,22 @@ public class UserService {
         fields.forEach((key, rawValue) -> {
             String value = rawValue != null ? rawValue.toString() : null;
             switch (key.toLowerCase()) {
-                case "email"    -> user.setEmail(value);
-                case "name"     -> user.setName(value);
-                case "phone"    -> user.setPhone(value);
-                case "password" -> user.setPassword(aes.encrypt(value));
-                case "rfc"   -> {
+                case "email" ->
+                    user.setEmail(value);
+                case "name" ->
+                    user.setName(value);
+                case "phone" ->
+                    user.setPhone(value);
+                case "password" ->
+                    user.setPassword(aes.encrypt(value));
+                case "rfc" -> {
                     if (userRepository.existeRFC(value) && !value.equalsIgnoreCase(user.getRfc())) {
                         throw new UsuarioDuplicado("RFC  ya en uso: " + value);
                     }
                     user.setRfc(value);
                 }
-                default -> {}
+                default -> {
+                }
             }
         });
 
@@ -181,9 +187,11 @@ public class UserService {
 
     /*Login*/
     public LoginResponseDTO login(String rfc, String password) {
-        Usuario usuario = userRepository.findByRFC(rfc).orElseThrow(() -> new UsuarioNoEncontrado("Usuario no encontrado"));
-        String passwordDescifrado = aes.decrypt(password);
-        if (!passwordDescifrado.equals(password)) {
+        Usuario usuario = userRepository.findByRFC(rfc)
+                .orElseThrow(() -> new UsuarioNoEncontrado("Credenciales invalidas"));
+
+        String passwordGuardado = aes.decrypt(usuario.getPassword()); // ← descifra el de la BD
+        if (!passwordGuardado.equals(password)) {                     // ← compara contra lo que llega
             throw new UsuarioNoEncontrado("Credenciales invalidas");
         }
         return new LoginResponseDTO("Acceso exitoso", rfc);
@@ -191,7 +199,7 @@ public class UserService {
 
     private UserResponse toResponseDto(Usuario u) {
         return UserResponse.builder()
-                .Id(u.getId())
+                .id(u.getId())
                 .email(u.getEmail())
                 .name(u.getName())
                 .phone(u.getPhone())

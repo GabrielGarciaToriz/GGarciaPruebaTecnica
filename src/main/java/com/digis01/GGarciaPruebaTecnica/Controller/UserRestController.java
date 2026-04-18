@@ -2,9 +2,9 @@ package com.digis01.GGarciaPruebaTecnica.Controller;
 
 import com.digis01.GGarciaPruebaTecnica.DTO.UserRequestDTO;
 import com.digis01.GGarciaPruebaTecnica.DTO.UserResponse;
-import com.digis01.GGarciaPruebaTecnica.Model.Usuario;
 import com.digis01.GGarciaPruebaTecnica.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -37,9 +37,10 @@ public class UserRestController {
     ) {
         return ResponseEntity.ok(userService.getUsuarios(sortedBy, filterBy));
     }
-     @PostMapping
+
+    @PostMapping
     @Operation(summary = "Crear nuevo usuario")
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequestDTO dto) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.crearUsuario(dto));
     }
 
