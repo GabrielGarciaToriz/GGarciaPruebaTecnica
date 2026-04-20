@@ -23,7 +23,7 @@ public class UserRepository {
     }
 
     private void initData() {
-        String rawPassword = "7c4a8d09ca3762af61e59520943dc26494f8941b";
+        String rawPassword = "Gabo230105302.";
         usuarios.add(Usuario.builder()
                 .id(UUID.randomUUID())
                 .email("gabrielgarciatoriz@gmail.com")

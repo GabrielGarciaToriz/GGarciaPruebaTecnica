@@ -9,4 +9,5 @@ import lombok.Data;
 public class LoginResponseDTO {
     private String message;
     private String taxId;
+    private String token;
 }

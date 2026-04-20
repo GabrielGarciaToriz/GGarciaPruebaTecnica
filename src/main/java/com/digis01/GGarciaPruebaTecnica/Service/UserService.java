@@ -8,6 +8,7 @@ import com.digis01.GGarciaPruebaTecnica.Exception.UsuarioNoEncontrado;
 import com.digis01.GGarciaPruebaTecnica.Model.Usuario;
 import com.digis01.GGarciaPruebaTecnica.Repository.UserRepository;
 import com.digis01.GGarciaPruebaTecnica.Utill.AesEncryptionService;
+import com.digis01.GGarciaPruebaTecnica.Utill.JwtUtil;
 import jakarta.annotation.PostConstruct;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -28,6 +29,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final AesEncryptionService aes;
     private ZoneId madagascar;
+    private final JwtUtil jwtUtil;
 
     @Value("${app.timezone}")
     private String timezoneStr;
@@ -37,9 +39,10 @@ public class UserService {
         this.madagascar = ZoneId.of(timezoneStr);
     }
 
-    public UserService(UserRepository userRepository1, AesEncryptionService aes) {
+    public UserService(UserRepository userRepository1, AesEncryptionService aes, JwtUtil jwtUtil1) {
         this.userRepository = userRepository1;
         this.aes = aes;
+        this.jwtUtil=jwtUtil1;
     }
 
     public List<UserResponse> getUsuarios(String sortedBy, String filter) {
@@ -194,7 +197,8 @@ public class UserService {
         if (!passwordGuardado.equals(password)) {                     // ← compara contra lo que llega
             throw new UsuarioNoEncontrado("Credenciales invalidas");
         }
-        return new LoginResponseDTO("Acceso exitoso", rfc);
+        String token = jwtUtil.generarToeken(rfc);
+        return new LoginResponseDTO("Acceso exitoso", rfc,token);
     }
 
     private UserResponse toResponseDto(Usuario u) {
