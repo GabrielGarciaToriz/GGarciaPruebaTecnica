@@ -1,7 +1,5 @@
 package com.digis01.GGarciaPruebaTecnica.Model;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;

@@ -12,7 +12,6 @@ import com.digis01.GGarciaPruebaTecnica.Utill.JwtUtil;
 import jakarta.annotation.PostConstruct;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -25,10 +24,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    private static final DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
     private final UserRepository userRepository;
     private final AesEncryptionService aes;
-    private ZoneId madagascar;
     private final JwtUtil jwtUtil;
 
     @Value("${app.timezone}")
@@ -36,7 +33,7 @@ public class UserService {
 
     @PostConstruct
     public void init() {
-        this.madagascar = ZoneId.of(timezoneStr);
+        ZoneId.of(timezoneStr);
     }
 
     public UserService(UserRepository userRepository1, AesEncryptionService aes, JwtUtil jwtUtil1) {
